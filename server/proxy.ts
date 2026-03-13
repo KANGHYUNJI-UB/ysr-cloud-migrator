@@ -84,17 +84,27 @@ app.post('/api/insert/all', async (req, res) => {
     }
   }
 
-  let overallSuccess = true;
-
   // 1. 기존 데이터 삭제
-  if (!await runStep('delete-all', `/delete/all/${hospitalIdNum}`, 'DELETE')) overallSuccess = false;
+  if (!await runStep('delete-all', `/delete/all/${hospitalIdNum}`, 'DELETE')) {
+    send({ type: 'complete', success: false });
+    res.end();
+    return;
+  }
 
   // 2. 스테이징 생성
-  if (!await runStep('stage-create', '/stage/create', 'POST', body)) overallSuccess = false;
+  if (!await runStep('stage-create', '/stage/create', 'POST', body)) {
+    send({ type: 'complete', success: false });
+    res.end();
+    return;
+  }
 
   // 3. 단계별 삽입
   for (const step of INSERT_STEPS) {
-    if (!await runStep(step.name, step.path, step.method, body)) overallSuccess = false;
+    if (!await runStep(step.name, step.path, step.method, body)) {
+      send({ type: 'complete', success: false });
+      res.end();
+      return;
+    }
   }
 
   send({ type: 'complete', success: overallSuccess });
