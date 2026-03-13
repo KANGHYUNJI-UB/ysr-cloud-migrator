@@ -34,6 +34,7 @@ export function streamMigration(
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
+    let completed = false;
 
     try {
       while (true) {
@@ -48,12 +49,14 @@ export function streamMigration(
           const line = chunk.replace(/^data:\s*/, '').trim();
           if (!line) continue;
           try {
-            onEvent(JSON.parse(line) as MigrationEvent);
+            const event = JSON.parse(line) as MigrationEvent;
+            if (event.type === 'complete') completed = true;
+            onEvent(event);
           } catch { /* ignore parse errors */ }
         }
       }
     } catch (err) {
-      if (err instanceof Error && err.name !== 'AbortError') {
+      if (!completed && err instanceof Error && err.name !== 'AbortError') {
         onEvent({ type: 'error', message: err.message });
       }
     }
