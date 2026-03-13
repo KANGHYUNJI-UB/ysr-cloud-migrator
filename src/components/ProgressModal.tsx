@@ -144,10 +144,11 @@ export function ProgressModal({ steps }: Props) {
       style={{ background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(4px)' }}
     >
       <div
-        className="w-full max-w-md rounded-2xl overflow-hidden animate-slide-up"
+        className="w-full max-w-md rounded-2xl overflow-hidden animate-slide-up flex flex-col"
         style={{
           background: '#ffffff',
           boxShadow: '0 25px 50px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1)',
+          maxHeight: '90vh',
         }}
       >
         {/* Modal header */}
@@ -208,11 +209,11 @@ export function ProgressModal({ steps }: Props) {
         </div>
 
         {/* Steps list */}
-        <div className="px-6 py-5">
-          <div className="flex flex-col gap-1">
+        <div className="px-6 py-4 overflow-y-auto flex-1">
+          <div className="flex flex-col gap-0">
             {steps.map((step, index) => (
               <div key={step.id}>
-                <div className="flex items-center gap-3 py-2.5">
+                <div className="flex items-center gap-3 py-1.5">
                   <StepIcon status={step.status} />
 
                   {/* Connector line area */}
