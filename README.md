@@ -61,13 +61,13 @@
 # 스크린샷
 
 ### 메인 화면 — 이관 정보 입력
-![메인 화면](docs/screenshots/Main.png)
+<img src="docs/screenshots/Main.png" width="50%">
 
 ### 이관 진행 중 — 단계별 실시간 진행 상황
-![이관 진행](docs/screenshots/MigIng.png)
+<img src="docs/screenshots/MigIng.png" width="50%">
 
 ### 이관 완료 — 결과 요약
-![완료 화면](docs/screenshots/Success.png)
+<img src="docs/screenshots/Success.png" width="50%">
 
 ---
 
