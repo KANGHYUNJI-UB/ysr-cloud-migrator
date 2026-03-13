@@ -10,8 +10,27 @@ app.use(express.json());
 
 const BASE_URL = 'http://localhost:3000';
 
-const DB_SOURCE = { host: '192.168.245.77', port: 5435, user: 'edba', password: 'ubcare1!', database: 'ysr2000' };
-const DB_TARGET = { host: '4.230.53.122', port: 5432, user: 'nextemr', password: 'ubcare1!', database: 'emr_db' };
+const required = (key: string): string => {
+  const val = process.env[key];
+  if (!val) throw new Error(`환경변수 누락: ${key} (.env 파일을 확인하세요)`);
+  return val;
+};
+
+const DB_SOURCE = {
+  host: required('SOURCE_HOST'),
+  port: Number(required('SOURCE_PORT')),
+  user: required('SOURCE_USER'),
+  password: required('SOURCE_PASSWORD'),
+  database: required('SOURCE_DATABASE'),
+};
+
+const DB_TARGET = {
+  host: required('TARGET_HOST'),
+  port: Number(required('TARGET_PORT')),
+  user: required('TARGET_USER'),
+  password: required('TARGET_PASSWORD'),
+  database: required('TARGET_DATABASE'),
+};
 
 // 삽입 단계 목록 (hospitalId 독립적인 것들)
 const INSERT_STEPS = [
