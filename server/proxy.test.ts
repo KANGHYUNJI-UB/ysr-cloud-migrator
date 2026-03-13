@@ -100,20 +100,20 @@ describe('POST /api/insert/all — 정상 이관', () => {
     expect(last).toEqual({ type: 'complete', success: true });
   });
 
-  it('총 15단계 + complete 로 총 31개 이벤트가 전송된다 (step-start 15 + step-done 15 + complete 1)', async () => {
+  it('총 16단계 + complete 로 총 33개 이벤트가 전송된다 (step-start 16 + step-done 16 + complete 1)', async () => {
     mockAllSuccess();
     const res = await postMigration('1');
     const events = parseSSE(res.body as unknown as string);
 
-    expect(events).toHaveLength(31);
+    expect(events).toHaveLength(33);
   });
 
-  it('delete-all 이 첫 번째 단계이다', async () => {
+  it('init 이 첫 번째 단계이다', async () => {
     mockAllSuccess();
     const res = await postMigration('1');
     const events = parseSSE(res.body as unknown as string) as Array<{ type: string; name?: string }>;
 
-    expect(events[0]).toEqual({ type: 'step-start', name: 'delete-all' });
+    expect(events[0]).toEqual({ type: 'step-start', name: 'init' });
   });
 
   it('receipt-settlement-payment 가 마지막 삽입 단계이다', async () => {

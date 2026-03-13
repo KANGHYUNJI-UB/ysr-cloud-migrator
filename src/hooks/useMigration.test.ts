@@ -26,9 +26,9 @@ describe('초기 상태', () => {
     expect(result.current.state.status).toBe('idle');
   });
 
-  it('steps 가 15개이다', () => {
+  it('steps 가 16개이다', () => {
     const { result } = renderHook(() => useMigration());
-    expect(result.current.state.steps).toHaveLength(15);
+    expect(result.current.state.steps).toHaveLength(16);
   });
 
   it('모든 step 의 초기 status 가 pending 이다', () => {
@@ -36,14 +36,14 @@ describe('초기 상태', () => {
     result.current.state.steps.forEach(s => expect(s.status).toBe('pending'));
   });
 
-  it('첫 번째 단계 레이블이 기존 데이터 삭제 이다', () => {
+  it('첫 번째 단계 레이블이 DB 연결 초기화 이다', () => {
     const { result } = renderHook(() => useMigration());
-    expect(result.current.state.steps[0].label).toBe('기존 데이터 삭제');
+    expect(result.current.state.steps[0].label).toBe('DB 연결 초기화');
   });
 
   it('마지막 단계 레이블이 수납·정산·결제 정보 이다', () => {
     const { result } = renderHook(() => useMigration());
-    expect(result.current.state.steps[14].label).toBe('수납·정산·결제 정보');
+    expect(result.current.state.steps[15].label).toBe('수납·정산·결제 정보');
   });
 });
 
@@ -65,15 +65,15 @@ describe('SSE 이벤트 처리', () => {
   it('step-start 이벤트가 오면 해당 단계가 running 이 된다', () => {
     const { result } = renderHook(() => useMigration());
     act(() => result.current.startMigration('HOSP_001'));
-    emit({ type: 'step-start', name: 'delete-all' });
+    emit({ type: 'step-start', name: 'init' });
     expect(result.current.state.steps[0].status).toBe('running');
   });
 
   it('step-done 이벤트가 오면 해당 단계가 done 이 된다', () => {
     const { result } = renderHook(() => useMigration());
     act(() => result.current.startMigration('HOSP_001'));
-    emit({ type: 'step-start', name: 'delete-all' });
-    emit({ type: 'step-done', name: 'delete-all' });
+    emit({ type: 'step-start', name: 'init' });
+    emit({ type: 'step-done', name: 'init' });
     expect(result.current.state.steps[0].status).toBe('done');
   });
 
@@ -82,13 +82,13 @@ describe('SSE 이벤트 처리', () => {
     act(() => result.current.startMigration('HOSP_001'));
     emit({ type: 'step-start', name: 'prescription' });
     emit({ type: 'step-error', name: 'prescription', message: 'DB 오류' });
-    expect(result.current.state.steps[2].status).toBe('error');
+    expect(result.current.state.steps[3].status).toBe('error');
   });
 
   it('step-start 이벤트 시 이전 단계들이 모두 done 이 된다', () => {
     const { result } = renderHook(() => useMigration());
     act(() => result.current.startMigration('HOSP_001'));
-    emit({ type: 'step-start', name: 'stage-create' }); // index 1
+    emit({ type: 'step-start', name: 'delete-all' }); // index 1
     expect(result.current.state.steps[0].status).toBe('done');
     expect(result.current.state.steps[1].status).toBe('running');
     expect(result.current.state.steps[2].status).toBe('pending');

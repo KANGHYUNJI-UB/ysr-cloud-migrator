@@ -86,13 +86,16 @@ app.post('/api/insert/all', async (req, res) => {
 
   let overallSuccess = true;
 
-  // 1. 기존 데이터 삭제
+  // 1. DB 연결 초기화
+  if (!await runStep('init', '/init', 'POST', body)) overallSuccess = false;
+
+  // 2. 기존 데이터 삭제
   if (!await runStep('delete-all', `/delete/all/${hospitalIdNum}`, 'DELETE')) overallSuccess = false;
 
-  // 2. 스테이징 생성
+  // 3. 스테이징 생성
   if (!await runStep('stage-create', '/stage/create', 'POST', body)) overallSuccess = false;
 
-  // 3. 단계별 삽입
+  // 4. 단계별 삽입
   for (const step of INSERT_STEPS) {
     if (!await runStep(step.name, step.path, step.method, body)) overallSuccess = false;
   }

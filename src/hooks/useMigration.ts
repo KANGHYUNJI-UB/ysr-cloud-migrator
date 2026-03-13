@@ -4,6 +4,7 @@ import type { MigrationEvent } from '../services/api';
 import { streamMigration } from '../services/api';
 
 const STEP_LABELS = [
+  'DB 연결 초기화',
   '기존 데이터 삭제',
   '스테이징 생성',
   '처방 정보',
@@ -23,21 +24,22 @@ const STEP_LABELS = [
 
 // 백엔드 step name → 스텝 인덱스
 const STEP_NAME_TO_INDEX: Record<string, number> = {
-  'delete-all': 0,
-  'stage-create': 1,
-  'prescription': 2,
-  'medical-drug-material': 3,
-  'usage-code': 4,
-  'template-code': 5,
-  'bundle-item': 6,
-  'bundle-item-detail': 7,
-  'patient': 8,
-  'registration': 9,
-  'appointment': 10,
-  'disease': 11,
-  'order': 12,
-  'vital': 13,
-  'receipt-settlement-payment': 14,
+  'init': 0,
+  'delete-all': 1,
+  'stage-create': 2,
+  'prescription': 3,
+  'medical-drug-material': 4,
+  'usage-code': 5,
+  'template-code': 6,
+  'bundle-item': 7,
+  'bundle-item-detail': 8,
+  'patient': 9,
+  'registration': 10,
+  'appointment': 11,
+  'disease': 12,
+  'order': 13,
+  'vital': 14,
+  'receipt-settlement-payment': 15,
 };
 
 function buildInitialSteps(): MigrationStep[] {

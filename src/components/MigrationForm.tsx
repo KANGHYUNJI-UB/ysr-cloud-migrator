@@ -133,11 +133,10 @@ export function MigrationForm({ onSubmit, status }: Props) {
           <Field
             id="hospitalId"
             label="병원 ID"
-            placeholder="예: HOSP_001234"
+            placeholder="예: 1"
             value={form.hospitalId}
             onChange={v => setForm(f => ({ ...f, hospitalId: v }))}
             disabled={disabled}
-            mono
             required
           />
         </div>
