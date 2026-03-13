@@ -84,6 +84,21 @@ function StepLabel({ label, status }: { label: string; status: StepStatus }) {
   );
 }
 
+function ElapsedBadge({ elapsedMs }: { elapsedMs?: number }) {
+  if (elapsedMs === undefined) return null;
+  const text = elapsedMs >= 1000
+    ? `${(elapsedMs / 1000).toFixed(1)}s`
+    : `${elapsedMs}ms`;
+  return (
+    <span
+      className="text-xs"
+      style={{ color: '#94a3b8', fontFamily: "'DM Mono', monospace" }}
+    >
+      {text}
+    </span>
+  );
+}
+
 function StatusBadge({ status }: { status: StepStatus }) {
   if (status === 'running') {
     return (
@@ -231,7 +246,10 @@ export function ProgressModal({ steps }: Props) {
                       </span>
                       <StepLabel label={step.label} status={step.status} />
                     </div>
-                    <StatusBadge status={step.status} />
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <ElapsedBadge elapsedMs={step.elapsedMs} />
+                      <StatusBadge status={step.status} />
+                    </div>
                   </div>
                 </div>
 

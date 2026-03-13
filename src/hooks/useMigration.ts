@@ -9,8 +9,8 @@ const STEP_LABELS = [
   '임시 데이터저장소 생성',
   '처방 정보',
   '의약품·재료 정보',
-  '용법 코드 정보',
-  '템플릿 코드 정보',
+  '용법 정보',
+  '상용구(증상) 정보',
   '묶음 항목 정보',
   '묶음 항목 상세 정보',
   '환자 정보',
@@ -18,7 +18,7 @@ const STEP_LABELS = [
   '예약 정보',
   '상병 정보',
   '오더 정보',
-  '상용구(증상)',
+  '바이탈 정보',
   '수납·정산·결제 정보',
 ];
 
@@ -59,11 +59,13 @@ export function useMigration() {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef(0);
+  const stepStartTimeRef = useRef<Record<number, number>>({});
 
   const handleEvent = useCallback((event: MigrationEvent) => {
     if (event.type === 'step-start') {
       const idx = event.name !== undefined ? (STEP_NAME_TO_INDEX[event.name] ?? -1) : -1;
       if (idx === -1) return;
+      stepStartTimeRef.current[idx] = Date.now();
       setState(prev => ({
         ...prev,
         currentStepIndex: idx,
@@ -76,10 +78,13 @@ export function useMigration() {
     } else if (event.type === 'step-done' || event.type === 'step-error') {
       const idx = event.name !== undefined ? (STEP_NAME_TO_INDEX[event.name] ?? -1) : -1;
       if (idx === -1) return;
+      const stepElapsedMs = stepStartTimeRef.current[idx] !== undefined
+        ? Date.now() - stepStartTimeRef.current[idx]
+        : undefined;
       setState(prev => ({
         ...prev,
         steps: prev.steps.map((s, i) =>
-          i === idx ? { ...s, status: event.type === 'step-done' ? 'done' : 'error' } : s
+          i === idx ? { ...s, status: event.type === 'step-done' ? 'done' : 'error', elapsedMs: stepElapsedMs } : s
         ),
       }));
 

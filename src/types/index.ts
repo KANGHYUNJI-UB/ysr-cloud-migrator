@@ -6,6 +6,7 @@ export interface MigrationStep {
   id: string;
   label: string;
   status: StepStatus;
+  elapsedMs?: number;
 }
 
 export interface MigrationState {

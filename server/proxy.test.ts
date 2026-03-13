@@ -15,6 +15,8 @@ function parseSSE(text: string): object[] {
 // 모든 step 요청에 대해 success: true 를 반환하는 mock fetch
 function mockAllSuccess() {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
     json: () => Promise.resolve({ success: true }),
   }));
 }
@@ -23,9 +25,9 @@ function mockAllSuccess() {
 function mockFailAt(failUrl: string) {
   vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
     if ((url as string).includes(failUrl)) {
-      return Promise.resolve({ json: () => Promise.resolve({ success: false, error: '테스트 오류' }) });
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ success: false, error: '테스트 오류' }) });
     }
-    return Promise.resolve({ json: () => Promise.resolve({ success: true }) });
+    return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ success: true }) });
   }));
 }
 

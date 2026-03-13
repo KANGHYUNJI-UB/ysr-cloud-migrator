@@ -68,8 +68,9 @@ app.post('/api/insert/all', async (req, res) => {
         ...(method !== 'DELETE' && { body: stepBody }),
       });
       const result = await upstream.json() as StepResult;
-      console.log(`[proxy] 완료: ${path} → success=${result.success}`);
-      if (result.success) {
+      console.log(`[proxy] 응답: ${method} ${path} → HTTP ${upstream.status}, body=${JSON.stringify(result)}`);
+      const ok = upstream.ok && result.success !== false;
+      if (ok) {
         send({ type: 'step-done', name });
         return true;
       } else {
@@ -100,6 +101,7 @@ app.post('/api/insert/all', async (req, res) => {
     if (!await runStep(step.name, step.path, step.method, body)) overallSuccess = false;
   }
 
+  console.log(`[proxy] complete → overallSuccess=${overallSuccess}`);
   send({ type: 'complete', success: overallSuccess });
   res.end();
 });
